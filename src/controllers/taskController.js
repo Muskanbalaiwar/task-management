@@ -30,24 +30,24 @@ exports.createTask = async (req, res) => {
 
 exports.getMyTasks = async (req, res) => {
   try {
-    const { page = 1, limit = 10, search = '' } = req.query;
-    const offset = (page - 1) * limit;
+    const { page = 1, limit = 10, search = null } = req.query;
 
     const tasks = await sequelize.query(
-      `CALL sp_get_user_tasks(:userId, :search, :limit, :offset)`,
+      `SELECT * FROM sp_get_user_tasks(:p_user_id, :p_page, :p_limit, :p_search)`,
       {
         replacements: {
-          userId: req.user.id,
-          search: `%${search}%`,
-          limit: parseInt(limit),
-          offset: parseInt(offset)
+          p_user_id: req.user.id,
+          p_page: parseInt(page),
+          p_limit: parseInt(limit),
+          p_search: search ? `%${search}%` : null
         },
-        type: QueryTypes.RAW
+        type: QueryTypes.SELECT
       }
     );
 
     res.json(tasks);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: err.message });
   }
 };

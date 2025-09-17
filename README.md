@@ -3,6 +3,7 @@ steps to run at your local machine
 clone the code at your local system
 run command inside task-managemnt derectory -> npm i
 add your env and db related values .into env file
+run storeProcedure.js file query into your pgsql to create store procedure and after that you can use it where you want
 
 
 project structure
